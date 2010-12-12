@@ -10,7 +10,9 @@
 # the Free Software Foundation.
 #
 
-class uwsgi {
+class uwsgi(
+  $sysconfig = false
+){
   package{'uwsgi':
     ensure => present,
   }
@@ -23,14 +25,12 @@ class uwsgi {
       File['/etc/sysconfig/uwsgi'],
     ],
   }
-  file{'/etc/sysconfig/uwsgi':
-    source => [
-      "puppet://$source/modules/site-uwsgi/$fqdn/uwsgi.sysconfig",
-      "puppet://$source/moduels/site-uwsgi/uwsgi.sysconfig",
-      "puppet://$source/modules/uwsgi/uwsgi.sysconfig",
-    ],
-    require => Package['uwsgi'],
-    notify => Service['uwsgi'],
-    owner => root, group => root, mode => 0444;
+  if $sysconfig {
+    file{'/etc/sysconfig/uwsgi':
+      content => template('uwsgi/sysconfig.erb'),
+      require => Package['uwsgi'],
+      notify => Service['uwsgi'],
+      owner => root, group => root, mode => 0444;
+    }
   }
 }
