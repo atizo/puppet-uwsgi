@@ -23,9 +23,6 @@ class uwsgi(
     require => Package['uwsgi'],
   }
   if $sysconfig {
-    Service['uwsgi']{
-      require => File['/etc/sysconfig/uwsgi'],
-    }
     file{'/etc/sysconfig/uwsgi':
       content => template('uwsgi/sysconfig.erb'),
       require => Package['uwsgi'],
