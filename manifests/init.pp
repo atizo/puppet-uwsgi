@@ -19,7 +19,7 @@ class uwsgi(
   service{'uwsgi':
     ensure => running,
     enable => true,
-    hasstatus => true,
+    hasstatus => false,
     require => Package['uwsgi'],
   }
   if $sysconfig {
