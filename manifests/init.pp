@@ -20,6 +20,7 @@ class uwsgi(
     ensure => running,
     enable => true,
     hasstatus => false,
+    status => "pgrep uwsgi",
     require => Package['uwsgi'],
   }
   if $sysconfig {
