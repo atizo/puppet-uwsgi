@@ -50,9 +50,7 @@ class uwsgi(
     enable => true,
     hasstatus => false,
     status => "pgrep uwsgi",
-    require => Python::Pip['uwsgi'],
-    require => File['/etc/rc.d/init.d/uwsgi'],
-    require => User['uwsgi'],
+    require => [ Python::Pip['uwsgi'], File['/etc/rc.d/init.d/uwsgi'], User['uwsgi']],
   }
 }
 
