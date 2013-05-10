@@ -43,7 +43,7 @@ class uwsgi(
     ],
     require => Python::Pip['uwsgi'],
     notify => Service['uwsgi'],
-    owner => root, group => 0, mode => 0644;
+    owner => root, group => 0, mode => 0755;
   }
   service{'uwsgi':
     ensure => running,
