@@ -30,12 +30,12 @@ class uwsgi(
     enable => true,
     hasstatus => false,
     status => "pgrep uwsgi",
-    require => Package['uwsgi'],
+    require => Python::Pip['uwsgi'],
   }
   if $sysconfig {
     file{'/etc/sysconfig/uwsgi':
       content => template('uwsgi/sysconfig.erb'),
-      require => Package['uwsgi'],
+      require => Python::Pip['uwsgi'],
       notify => Service['uwsgi'],
       owner => root, group => root, mode => 0444;
     }
