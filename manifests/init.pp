@@ -24,14 +24,7 @@ class uwsgi(
   user { "uwsgi":
     ensure     => "present",
     require => Group["uwsgi"],    
-  }
-  service{'uwsgi':
-    ensure => running,
-    enable => true,
-    hasstatus => false,
-    status => "pgrep uwsgi",
-    require => Python::Pip['uwsgi'],
-  }
+  }  
   if $sysconfig {
     file{'/etc/sysconfig/uwsgi':
       content => template('uwsgi/sysconfig.erb'),
@@ -51,6 +44,15 @@ class uwsgi(
     require => Python::Pip['uwsgi'],
     notify => Service['uwsgi'],
     owner => root, group => 0, mode => 0644;
+  }
+  service{'uwsgi':
+    ensure => running,
+    enable => true,
+    hasstatus => false,
+    status => "pgrep uwsgi",
+    require => Python::Pip['uwsgi'],
+    require => File['/etc/rc.d/init.d/uwsgi'],
+    require => User['uwsgi'],
   }
 }
 
