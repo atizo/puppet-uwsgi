@@ -16,7 +16,7 @@ class uwsgi(
 ){
   python::pip{'uwsgi':
     ensure => installed,
-    version = $version,
+    version => $version,
   }
   service{'uwsgi':
     ensure => running,
