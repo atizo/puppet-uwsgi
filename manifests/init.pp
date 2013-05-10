@@ -13,8 +13,9 @@
 class uwsgi(
   $sysconfig = false
 ){
-  package{'uwsgi':
-    ensure => present,
+  python::pip{'uwsgi':
+    ensure => installed,
+    version = 1.9.8
   }
   service{'uwsgi':
     ensure => running,
@@ -30,5 +31,17 @@ class uwsgi(
       notify => Service['uwsgi'],
       owner => root, group => root, mode => 0444;
     }
+  }
+  file{'/etc/rc.d/init.d/uwsgi':
+    source => [
+      "puppet://$server/modules/site-uwsgi/$fqdn/uwsgi",
+      "puppet://$server/modules/site-uwsgi/$operatingsystem/uwsgi",
+      "puppet://$server/modules/site-uwsgi/uwsgi",
+      "puppet://$server/modules/uwsgi/$operatingsystem/uwsgi",
+      "puppet://$server/modules/uwsgi/uwsgi",
+    ],
+    require => Python::Pip['uwsgi'],
+    notify => Service['uwsgi'],
+    owner => root, group => 0, mode => 0644;
   }
 }

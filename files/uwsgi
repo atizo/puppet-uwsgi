@@ -1,0 +1,85 @@
+#! /bin/bash
+
+# uwsgi - Use uwsgi to run python and wsgi web apps.
+#
+# chkconfig: - 85 15
+# description: Use uwsgi to run python and wsgi web apps.
+# processname: uwsgi
+
+DAEMON=/usr/bin/uwsgi
+OWNER=uwsgi
+NAME=uwsgi
+DESC=uwsgi
+
+# make sure cwd is /
+cd /
+
+# Source function library.
+. /etc/init.d/functions
+
+DAEMON_OPTS="-d /var/log/$NAME.log --pidfile=/var/run/uwsgi/$NAME.pid --no-orphans"
+if [ -f /etc/sysconfig/uwsgi.xml ]; then
+  DAEMON_OPTS="$DAEMON_OPTS -x /etc/sysconfig/uwsgi.xml"
+elif [ -f /etc/sysconfig/uwsgi ]; then
+  DAEMON_OPTS="$DAEMON_OPTS --ini /etc/sysconfig/uwsgi"
+else
+  DAEMON_OPTS="$DAEMON_OPTS= -s 127.0.0.1:9001 -C -M 4 -t 30 -A 4 -p 4"
+fi
+
+RETVAL=0
+
+start() {
+  echo -n "Starting $DESC: "
+  daemon --user=$OWNER "$DAEMON $DAEMON_OPTS"
+  RETVAL=$?
+  echo
+  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/$NAME
+  return $RETVAL
+}
+
+stop() {
+  echo -n "Stopping $DESC: "
+  killproc $NAME
+  RETVAL=$?
+  echo
+  if [ $RETVAL -eq 0 ]; then
+    rm -f /var/lock/subsys/$NAME
+    rm -f /var/run/uwsgi/$NAME.pid
+  fi
+  return $RETVAL
+}
+
+reload() {
+  echo -n "Reloading $DESC: "
+  test -f /var/run/uwsgi/$NAME.pid \
+  && { kill -SIGHUP `cat /var/run/uwsgi/$NAME.pid` && success; } \
+  || failure
+  RETVAL=$?
+  echo
+  return $RETVAL
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    echo -n "Restarting $DESC: "
+    stop
+    start
+    ;;
+  reload)  
+    reload
+    ;;
+  status)  
+    status uwsgi
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|reload|force-reload|status}"
+    exit 1
+    ;;
+esac
+exit $RETVAL
