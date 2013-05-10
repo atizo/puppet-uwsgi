@@ -11,7 +11,7 @@
 #
 
 class uwsgi(
-  $version = 1.9.8,
+  $version = '1.9.8',
   $sysconfig = false
 ){
   python::pip{'uwsgi':
