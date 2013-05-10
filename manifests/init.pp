@@ -11,11 +11,12 @@
 #
 
 class uwsgi(
+  $version 1.9.8
   $sysconfig = false
 ){
   python::pip{'uwsgi':
     ensure => installed,
-    version = 1.9.8
+    version = $version
   }
   service{'uwsgi':
     ensure => running,
