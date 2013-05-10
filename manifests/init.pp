@@ -46,3 +46,4 @@ class uwsgi(
     owner => root, group => 0, mode => 0644;
   }
 }
+
