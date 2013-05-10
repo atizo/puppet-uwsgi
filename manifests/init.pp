@@ -18,6 +18,13 @@ class uwsgi(
     ensure => installed,
     version => $version,
   }
+  group { "uwsgi":
+    ensure => "present",
+  }
+  user { "uwsgi":
+    ensure     => "present",
+    require => Group["uwsgi"],    
+  }
   service{'uwsgi':
     ensure => running,
     enable => true,
